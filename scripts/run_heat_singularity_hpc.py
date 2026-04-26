@@ -4,51 +4,60 @@ import subprocess
 from pathlib import Path
 
 
-HEAT_HOST_DIR = Path("/home/fo37nor/assets/heat")
-HEAT_CONTAINER_DIR = Path("/opt/heat")
+PROJECT_ROOT = Path("/home/fo37nor/assets/lod2_building_pipeline")
 
+HEAT_CODE_DIR = PROJECT_ROOT / "third_party" / "heat"
+HEAT_INPUT_DIR = PROJECT_ROOT / "work" / "heat_input"
+HEAT_OUTPUT_DIR = PROJECT_ROOT / "work" / "heat_output"
+
+CHECKPOINTS_DIR = Path("/home/fo37nor/assets/heat/checkpoints")
 SINGULARITY_IMAGE = Path("/home/fo37nor/assets/heat/heat_with_tensorboard.sif")
 
-START_INFER_SCRIPT = HEAT_CONTAINER_DIR / "start_infer.sh"
+CONTAINER_HEAT_DIR = Path("/opt/heat")
 
 
 def main():
-    if not HEAT_HOST_DIR.exists():
-        raise FileNotFoundError(f"HEAT_HOST_DIR not found: {HEAT_HOST_DIR}")
+    if not HEAT_CODE_DIR.exists():
+        raise FileNotFoundError(f"Missing HEAT code folder: {HEAT_CODE_DIR}")
+
+    if not HEAT_INPUT_DIR.exists():
+        raise FileNotFoundError(f"Missing HEAT input folder: {HEAT_INPUT_DIR}")
+
+    if not CHECKPOINTS_DIR.exists():
+        raise FileNotFoundError(f"Missing checkpoints folder: {CHECKPOINTS_DIR}")
 
     if not SINGULARITY_IMAGE.exists():
-        raise FileNotFoundError(f"SINGULARITY_IMAGE not found: {SINGULARITY_IMAGE}")
+        raise FileNotFoundError(f"Missing Singularity image: {SINGULARITY_IMAGE}")
 
-    host_start_script = HEAT_HOST_DIR / "start_infer.sh"
-    if not host_start_script.exists():
-        raise FileNotFoundError(f"start_infer.sh not found: {host_start_script}")
+    HEAT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     cmd = [
         "singularity",
         "exec",
         "--cleanenv",
         "--nv",
-        "-B", f"{HEAT_HOST_DIR}:{HEAT_CONTAINER_DIR}",
+        "-B", f"{HEAT_CODE_DIR}:{CONTAINER_HEAT_DIR}",
+        "-B", f"{HEAT_INPUT_DIR}:{CONTAINER_HEAT_DIR / 'data/outdoor/cities_dataset'}",
+        "-B", f"{HEAT_OUTPUT_DIR}:{CONTAINER_HEAT_DIR / 'results'}",
+        "-B", f"{CHECKPOINTS_DIR}:{CONTAINER_HEAT_DIR / 'checkpoints'}",
         "-B", "/cluster:/cluster",
         str(SINGULARITY_IMAGE),
         "bash",
-        str(START_INFER_SCRIPT),
+        str(CONTAINER_HEAT_DIR / "start_infer.sh"),
     ]
 
     print("=" * 80)
-    print("Running HEAT inference with Singularity")
+    print("Running HEAT inference from clean pipeline repo")
     print("=" * 80)
-    print("HEAT host dir     :", HEAT_HOST_DIR)
-    print("Container mount   :", f"{HEAT_HOST_DIR} -> {HEAT_CONTAINER_DIR}")
-    print("Singularity image :", SINGULARITY_IMAGE)
-    print("Start script      :", START_INFER_SCRIPT)
+    print("HEAT code   :", HEAT_CODE_DIR)
+    print("HEAT input  :", HEAT_INPUT_DIR)
+    print("HEAT output :", HEAT_OUTPUT_DIR)
+    print("Checkpoints :", CHECKPOINTS_DIR)
     print("=" * 80)
 
     subprocess.run(cmd, check=True)
 
-    print("=" * 80)
-    print("HEAT inference finished successfully")
-    print("=" * 80)
+    print("HEAT inference finished.")
 
 
 if __name__ == "__main__":
