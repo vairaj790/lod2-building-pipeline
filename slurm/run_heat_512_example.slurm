@@ -10,23 +10,13 @@
 
 set -euo pipefail
 
-# Change this to your cloned lod2_building_pipeline path
 PROJECT_ROOT="/path/to/lod2_building_pipeline"
-
-# Change this to your Singularity image path
 SIF_IMAGE="/path/to/heat_with_tensorboard.sif"
 
 HEAT_DIR="${PROJECT_ROOT}/third_party/heat"
-LOG_DIR="${PROJECT_ROOT}/slurm_logs"
-RUNTIME_DIR="${PROJECT_ROOT}/runtime_info"
 
-mkdir -p "$LOG_DIR"
-mkdir -p "$RUNTIME_DIR"
-
-# Load CUDA module if your HPC requires it
-# module load nvidia/cuda/12.4.0
-
-hostname > "${RUNTIME_DIR}/heat512_${SLURM_JOB_ID}.node"
+mkdir -p "${PROJECT_ROOT}/slurm_logs"
+mkdir -p "${PROJECT_ROOT}/runtime_info"
 
 singularity exec --cleanenv --nv \
   -B "${HEAT_DIR}:/opt/heat" \

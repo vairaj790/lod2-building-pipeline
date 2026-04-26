@@ -44,3 +44,6 @@ runtime_info/
 build/
 third_party/heat/models/ops/build/
 third_party/heat/models/ops/*.so
+
+# Local HPC scripts with machine-specific paths
+slurm/*_local.slurm
