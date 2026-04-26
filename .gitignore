@@ -36,3 +36,11 @@ runtime_info/
 # Editor
 .vscode/
 .DS_Store
+
+# Compiled extensions / build artifacts
+*.so
+*.o
+*.pyc
+build/
+third_party/heat/models/ops/build/
+third_party/heat/models/ops/*.so
