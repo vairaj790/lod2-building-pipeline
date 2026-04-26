@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+env/
+*.egg-info/
+
+# Local configs / secrets
+.env
+config_local.py
+
+# Data and outputs
+data/
+outputs/
+results/
+checkpoints/
+slurm_logs/
+runtime_info/
+
+# Large geospatial / model files
+*.tif
+*.tiff
+*.laz
+*.las
+*.glb
+*.npy
+*.pth
+*.ckpt
+*.sif
+
+# Editor
+.vscode/
+.DS_Store
