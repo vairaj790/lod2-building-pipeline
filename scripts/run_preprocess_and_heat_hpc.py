@@ -55,7 +55,7 @@ def main():
         run_script("scripts/setup_heat_ops_from_local.py")
 
     if RUN_HEAT_INFERENCE:
-        run_script("scripts/run_heat_singularity_hpc.py")
+        run_script("scripts/run_heat.py")
 
     print("=" * 80)
     print("Preprocessing + HEAT inference workflow finished.")
