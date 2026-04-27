@@ -5,10 +5,14 @@ import sys
 from pathlib import Path
 
 
-PROJECT_ROOT = Path("/home/fo37nor/assets/lod2_building_pipeline")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
+
+from lod2_building_pipeline.config_loader import load_config
+
 
 # Set True only when you want to regenerate crops from the satellite image.
-# For quick testing, keep False because preprocessing already ran successfully.
 RUN_PREPROCESSING = False
 
 RUN_PREPARE_HEAT_INPUT = True
@@ -30,6 +34,17 @@ def run_script(script_relative_path: str):
 
 
 def main():
+    cfg = load_config()
+
+    print("=" * 80)
+    print("LOD2 Building Pipeline - preprocessing + HEAT inference")
+    print("=" * 80)
+    print("Project root      :", cfg.PROJECT_ROOT)
+    print("Preprocess output :", cfg.PREPROCESS_OUTPUT)
+    print("HEAT input        :", cfg.HEAT_INPUT_DIR)
+    print("HEAT output       :", cfg.HEAT_OUTPUT_DIR)
+    print("=" * 80)
+
     if RUN_PREPROCESSING:
         run_script("scripts/run_preprocessing.py")
 
