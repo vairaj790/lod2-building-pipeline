@@ -20,9 +20,9 @@ Example Docker image:
 
 Create or provide a Singularity image, then set its path in:
 
-    configs/config_local.py
+    configs/config.py or configs/config_local.py
 
-Example values inside configs/config_local.py:
+Example values inside configs/config.py or configs/config_local.py:
 
     SINGULARITY_IMAGE = Path("/path/to/heat_with_tensorboard.sif")
     CHECKPOINTS_DIR = Path("/path/to/checkpoints")
@@ -31,7 +31,7 @@ Then run:
 
     python scripts/prepare_heat_input.py
     python scripts/setup_heat_ops_from_local.py
-    python scripts/run_heat_singularity_hpc.py
+    python scripts/run_heat.py
 
 ## HEAT CUDA ops
 
@@ -46,7 +46,7 @@ Build it inside your Docker/Singularity environment:
     cd third_party/heat/models/ops
     bash make.sh
 
-Or, if you already have a compatible compiled .so locally, set this in configs/config_local.py:
+Or, if you already have a compatible compiled .so locally, set this in configs/config.py or configs/config_local.py:
 
     LOCAL_HEAT_OPS_SOURCE_DIR = Path("/path/to/existing/heat/models/ops")
 
