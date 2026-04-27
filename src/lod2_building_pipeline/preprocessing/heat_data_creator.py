@@ -87,8 +87,8 @@ from sam3.model.sam3_image_processor import Sam3Processor
 # CONFIG - EDIT THESE PATHS ONLY
 # ======================================================================================
 
-SATELLITE_TIF = r"/home/fo37nor/assets/sam3/input_processing/sat.tif"
-OUTPUT_BASE = r"/home/fo37nor/assets/sam3/sam3_osm_heat_dataset"
+SATELLITE_TIF = r"/path/to/input/satellite.tif"
+OUTPUT_BASE = r"./work/preprocessing_output"
 
 # Optional SAM3 checkpoint. Leave empty if your SAM3 installation loads its default model.
 SAM3_CHECKPOINT_PATH = r""
