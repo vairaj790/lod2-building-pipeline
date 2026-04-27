@@ -23,9 +23,14 @@ def q(value) -> str:
 def build_inner_heat_command(cfg) -> str:
     checkpoint_path = Path("./checkpoints") / Path(cfg.CHECKPOINT_RELATIVE_PATH)
 
-    result_name = str(cfg.HEAT_RESULT_NAME)
-    viz_base = Path("./results") / f"viz_{result_name}"
-    save_base = Path("./results") / f"npy_{result_name}"
+    result_name = str(getattr(cfg, "HEAT_RESULT_NAME", "")).strip()
+
+    if result_name:
+        viz_base = Path("./results") / f"viz_{result_name}"
+        save_base = Path("./results") / f"npy_{result_name}"
+    else:
+        viz_base = Path("./results") / "viz"
+        save_base = Path("./results") / "npy"
 
     cmd = f"""
 set -euo pipefail

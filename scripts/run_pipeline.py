@@ -18,6 +18,7 @@ RUN_PREPROCESSING = False
 RUN_PREPARE_HEAT_INPUT = True
 RUN_SETUP_HEAT_OPS = True
 RUN_HEAT_INFERENCE = True
+RUN_POSTPROCESSING = True
 
 
 def run_script(script_relative_path: str):
@@ -56,6 +57,9 @@ def main():
 
     if RUN_HEAT_INFERENCE:
         run_script("scripts/run_heat.py")
+
+    if RUN_POSTPROCESSING:
+        run_script("scripts/run_postprocessing.py")
 
     print("=" * 80)
     print("Preprocessing + HEAT inference workflow finished.")

@@ -24,7 +24,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SATELLITE_TIF = Path("/path/to/input/satellite.tif")
 
 # Folder where preprocessing outputs will be written
-PREPROCESS_OUTPUT = PROJECT_ROOT / "work" / "preprocessing_output"
+PREPROCESS_OUTPUT = PROJECT_ROOT / "work" / "heat_input"
 
 
 # ---------------------------------------------------------------------
@@ -52,7 +52,7 @@ DOCKER_IMAGE = "vaibhavrajan79/heat_deformable-detr-image:with_tensorboard"
 # HEAT input/output inside this repo
 # ---------------------------------------------------------------------
 
-HEAT_INPUT_DIR = PROJECT_ROOT / "work" / "heat_input"
+HEAT_INPUT_DIR = PREPROCESS_OUTPUT
 HEAT_OUTPUT_DIR = PROJECT_ROOT / "work" / "heat_output"
 
 
@@ -65,7 +65,7 @@ CORNER_THRESH = 0.003
 EDGE_THRESH = 0.50
 INFER_TIMES = 1
 
-HEAT_RESULT_NAME = "old_best_ct_0.003_et_0.50"
+HEAT_RESULT_NAME = ""
 
 
 # ---------------------------------------------------------------------
@@ -74,3 +74,9 @@ HEAT_RESULT_NAME = "old_best_ct_0.003_et_0.50"
 
 # Public users can ignore this and build ops using docs/build_heat_ops.md later.
 LOCAL_HEAT_OPS_SOURCE_DIR = Path("/path/to/existing/heat/models/ops")
+
+# ---------------------------------------------------------------------
+# Postprocessing
+# ---------------------------------------------------------------------
+
+POSTPROCESS_OUTPUT_DIR = PROJECT_ROOT / "work" / "georeferenced_output"

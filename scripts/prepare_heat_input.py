@@ -39,13 +39,12 @@ def link_or_copy(src: Path, dst: Path):
 def main():
     cfg = load_config()
 
-    preprocess_output = Path(cfg.PREPROCESS_OUTPUT)
+    heat_input_dir = Path(cfg.HEAT_INPUT_DIR)
     image_size = int(cfg.IMAGE_SIZE)
 
-    source_rgb_dir = preprocess_output / f"rgb_jpg_{image_size}"
-    source_lists_dir = preprocess_output / "lists"
+    source_rgb_dir = heat_input_dir / f"rgb_jpg_{image_size}"
+    source_lists_dir = heat_input_dir / "lists"
 
-    heat_input_dir = Path(cfg.HEAT_INPUT_DIR)
     target_rgb_dir = heat_input_dir / "rgb"
 
     if not source_rgb_dir.exists():
@@ -53,8 +52,6 @@ def main():
 
     if not source_lists_dir.exists():
         raise FileNotFoundError(f"Missing source lists folder: {source_lists_dir}")
-
-    heat_input_dir.mkdir(parents=True, exist_ok=True)
 
     link_or_copy(source_rgb_dir, target_rgb_dir)
 
@@ -67,9 +64,10 @@ def main():
 
         link_or_copy(src, dst)
 
-    print("HEAT-compatible input prepared:")
+    print("HEAT-compatible aliases prepared:")
     print("  HEAT input :", heat_input_dir)
-    print("  RGB folder :", target_rgb_dir)
+    print("  RGB alias  :", target_rgb_dir)
+    print("  Metadata   :", heat_input_dir / "geo_metadata.json")
     print("  Image size :", image_size)
 
 
