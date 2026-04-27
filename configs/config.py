@@ -40,6 +40,13 @@ CHECKPOINTS_DIR = Path("/path/to/checkpoints")
 # Main HEAT checkpoint relative to CHECKPOINTS_DIR
 CHECKPOINT_RELATIVE_PATH = Path("main_fine_tuned_my_finetune_512/checkpoint_best.pth")
 
+# Container backend used by scripts/run_heat.py
+# Supported values planned:
+#   "singularity" = HPC / Singularity runtime
+#   "docker"      = local Docker runtime
+CONTAINER_BACKEND = "singularity"
+DOCKER_IMAGE = "vaibhavrajan79/heat_deformable-detr-image:with_tensorboard"
+
 
 # ---------------------------------------------------------------------
 # HEAT input/output inside this repo
