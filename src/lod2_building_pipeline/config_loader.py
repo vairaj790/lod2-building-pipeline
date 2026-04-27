@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIGS_DIR = PROJECT_ROOT / "configs"
 
 LOCAL_CONFIG = CONFIGS_DIR / "config_local.py"
-EXAMPLE_CONFIG = CONFIGS_DIR / "config_example.py"
+PUBLIC_CONFIG = CONFIGS_DIR / "config.py"
 
 
 def load_config():
@@ -16,8 +16,8 @@ def load_config():
         config_path = LOCAL_CONFIG
         print(f"Using local config: {config_path}")
     else:
-        config_path = EXAMPLE_CONFIG
-        print(f"Using example config: {config_path}")
+        config_path = PUBLIC_CONFIG
+        print(f"Using public config: {config_path}")
 
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
