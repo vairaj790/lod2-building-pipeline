@@ -1,47 +1,54 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
+import sys
 from pathlib import Path
 
 
-PROJECT_ROOT = Path("/home/fo37nor/assets/lod2_building_pipeline")
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+sys.path.insert(0, str(SRC_DIR))
 
-HEAT_CODE_DIR = PROJECT_ROOT / "third_party" / "heat"
-HEAT_INPUT_DIR = PROJECT_ROOT / "work" / "heat_input"
-HEAT_OUTPUT_DIR = PROJECT_ROOT / "work" / "heat_output"
+from lod2_building_pipeline.config_loader import load_config
 
-CHECKPOINTS_DIR = Path("/home/fo37nor/assets/heat/checkpoints")
-SINGULARITY_IMAGE = Path("/home/fo37nor/assets/heat/heat_with_tensorboard.sif")
 
 CONTAINER_HEAT_DIR = Path("/opt/heat")
 
 
 def main():
-    if not HEAT_CODE_DIR.exists():
-        raise FileNotFoundError(f"Missing HEAT code folder: {HEAT_CODE_DIR}")
+    cfg = load_config()
 
-    if not HEAT_INPUT_DIR.exists():
-        raise FileNotFoundError(f"Missing HEAT input folder: {HEAT_INPUT_DIR}")
+    heat_code_dir = Path(cfg.PROJECT_ROOT) / "third_party" / "heat"
+    heat_input_dir = Path(cfg.HEAT_INPUT_DIR)
+    heat_output_dir = Path(cfg.HEAT_OUTPUT_DIR)
+    checkpoints_dir = Path(cfg.CHECKPOINTS_DIR)
+    singularity_image = Path(cfg.SINGULARITY_IMAGE)
 
-    if not CHECKPOINTS_DIR.exists():
-        raise FileNotFoundError(f"Missing checkpoints folder: {CHECKPOINTS_DIR}")
+    if not heat_code_dir.exists():
+        raise FileNotFoundError(f"Missing HEAT code folder: {heat_code_dir}")
 
-    if not SINGULARITY_IMAGE.exists():
-        raise FileNotFoundError(f"Missing Singularity image: {SINGULARITY_IMAGE}")
+    if not heat_input_dir.exists():
+        raise FileNotFoundError(f"Missing HEAT input folder: {heat_input_dir}")
 
-    HEAT_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    if not checkpoints_dir.exists():
+        raise FileNotFoundError(f"Missing checkpoints folder: {checkpoints_dir}")
+
+    if not singularity_image.exists():
+        raise FileNotFoundError(f"Missing Singularity image: {singularity_image}")
+
+    heat_output_dir.mkdir(parents=True, exist_ok=True)
 
     cmd = [
         "singularity",
         "exec",
         "--cleanenv",
         "--nv",
-        "-B", f"{HEAT_CODE_DIR}:{CONTAINER_HEAT_DIR}",
-        "-B", f"{HEAT_INPUT_DIR}:{CONTAINER_HEAT_DIR / 'data/outdoor/cities_dataset'}",
-        "-B", f"{HEAT_OUTPUT_DIR}:{CONTAINER_HEAT_DIR / 'results'}",
-        "-B", f"{CHECKPOINTS_DIR}:{CONTAINER_HEAT_DIR / 'checkpoints'}",
+        "-B", f"{heat_code_dir}:{CONTAINER_HEAT_DIR}",
+        "-B", f"{heat_input_dir}:{CONTAINER_HEAT_DIR / 'data/outdoor/cities_dataset'}",
+        "-B", f"{heat_output_dir}:{CONTAINER_HEAT_DIR / 'results'}",
+        "-B", f"{checkpoints_dir}:{CONTAINER_HEAT_DIR / 'checkpoints'}",
         "-B", "/cluster:/cluster",
-        str(SINGULARITY_IMAGE),
+        str(singularity_image),
         "bash",
         str(CONTAINER_HEAT_DIR / "start_infer.sh"),
     ]
@@ -49,10 +56,11 @@ def main():
     print("=" * 80)
     print("Running HEAT inference from clean pipeline repo")
     print("=" * 80)
-    print("HEAT code   :", HEAT_CODE_DIR)
-    print("HEAT input  :", HEAT_INPUT_DIR)
-    print("HEAT output :", HEAT_OUTPUT_DIR)
-    print("Checkpoints :", CHECKPOINTS_DIR)
+    print("HEAT code   :", heat_code_dir)
+    print("HEAT input  :", heat_input_dir)
+    print("HEAT output :", heat_output_dir)
+    print("Checkpoints :", checkpoints_dir)
+    print("SIF image   :", singularity_image)
     print("=" * 80)
 
     subprocess.run(cmd, check=True)
