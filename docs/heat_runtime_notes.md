@@ -41,10 +41,11 @@ The compiled file:
 
 is not committed to GitHub because it is machine-specific.
 
-Build it inside your Docker/Singularity environment:
+Build it through the pipeline helper:
 
-    cd third_party/heat/models/ops
-    bash make.sh
+    python scripts/build_heat_ops.py
+
+This builds the extension inside the configured Docker/Singularity backend.
 
 Or, if you already have a compatible compiled .so locally, set this in configs/config.py or configs/config_local.py:
 
