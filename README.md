@@ -11,15 +11,12 @@ Current implemented stages:
 ## Repository structure
 
     configs/
-      config.py              Public configuration file
-      config_local.py        Private local override, ignored by Git
+      config.py              Configuration file
 
     scripts/
       run_preprocessing.py   Run satellite preprocessing
       prepare_heat_input.py  Prepare HEAT-compatible input folder
       build_heat_ops.py      Build HEAT CUDA extension
-      setup_heat_ops_from_local.py
-                             Optional helper to copy an existing local HEAT ops binary
       run_heat.py            Run HEAT inference
       run_pipeline.py        Run preprocessing/input-prep/HEAT workflow
 
@@ -28,13 +25,11 @@ Current implemented stages:
         preprocessing/
 
     third_party/
-      heat/                  Cleaned HEAT code used by the pipeline
-
-    work/                    Local outputs, ignored by Git
+      heat/                  Modified HEAT code used by the pipeline
 
 ## Setup
 
-Copy the public config and edit it for your machine:
+Copy the config and edit it for your machine:
 
     cp configs/config.py configs/config_local.py
 
@@ -49,8 +44,6 @@ Set paths such as:
     SINGULARITY_IMAGE
     CHECKPOINTS_DIR
     CONTAINER_BACKEND
-
-`config_local.py` is ignored by Git and should contain your private/local paths.
 
 ## HEAT runtime
 
@@ -74,10 +67,6 @@ Build it with:
 
     python scripts/build_heat_ops.py
 
-If you already have a compatible compiled `.so`, you can copy it locally using:
-
-    python scripts/setup_heat_ops_from_local.py
-
 ## Run pipeline
 
 Prepare HEAT input:
@@ -91,7 +80,3 @@ Run HEAT inference:
 Or run the combined workflow:
 
     python scripts/run_pipeline.py
-
-## Notes
-
-Large data, checkpoints, container images, compiled binaries, and outputs are intentionally not committed.
