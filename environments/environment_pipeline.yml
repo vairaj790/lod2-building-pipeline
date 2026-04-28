@@ -1,0 +1,26 @@
+name: lod2_pipeline
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.12
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - pillow
+  - matplotlib
+  - geopandas
+  - shapely
+  - rasterio
+  - affine
+  - pyproj
+  - scikit-image
+  - scikit-learn
+  - opencv
+  - tqdm
+  - requests
+  - laspy
+  - pip:
+      - lazrs

@@ -1,0 +1,25 @@
+name: lod2_interactive
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.11
+  - pip
+  - numpy
+  - scipy
+  - pandas
+  - pillow
+  - matplotlib
+  - pyqt
+  - geopandas
+  - shapely
+  - rasterio
+  - affine
+  - pyproj
+  - scikit-learn
+  - networkx
+  - laspy
+  - pip:
+      - lazrs
+      - open3d
