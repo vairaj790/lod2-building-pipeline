@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Public example configuration.
-
-Copy this file to:
-
-    configs/config_local.py
-
 Then edit the paths for your own machine/HPC.
 """
 
@@ -15,13 +9,38 @@ from pathlib import Path
 # Root of this repository
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
+INPUT_DIR = PROJECT_ROOT / "input"
+
+
+def find_single_input_file(patterns, label):
+    matches = []
+    for pattern in patterns:
+        matches.extend(INPUT_DIR.glob(pattern))
+
+    matches = sorted([p for p in matches if p.is_file()])
+
+    if len(matches) == 0:
+        raise FileNotFoundError(
+            f"No {label} found in {INPUT_DIR}. "
+            f"Expected exactly one file matching: {patterns}"
+        )
+
+    if len(matches) > 1:
+        raise RuntimeError(
+            f"More than one {label} found in {INPUT_DIR}. "
+            f"Please keep exactly one matching file. Found: {matches}"
+        )
+
+    return matches[0]
+
+
 
 # ---------------------------------------------------------------------
 # Preprocessing input/output
 # ---------------------------------------------------------------------
 
 # Full satellite GeoTIFF input
-SATELLITE_TIF = Path("/path/to/input/satellite.tif")
+SATELLITE_TIF = find_single_input_file(["*.tif", "*.tiff", "*.TIF", "*.TIFF"], "satellite GeoTIFF")
 
 # Folder where preprocessing outputs will be written
 PREPROCESS_OUTPUT = PROJECT_ROOT / "work" / "heat_input"
@@ -35,10 +54,10 @@ PREPROCESS_OUTPUT = PROJECT_ROOT / "work" / "heat_input"
 SINGULARITY_IMAGE = Path("/path/to/heat_with_tensorboard.sif")
 
 # Folder containing HEAT checkpoint files
-CHECKPOINTS_DIR = Path("/path/to/checkpoints")
+CHECKPOINTS_DIR = PROJECT_ROOT / "third_party" / "heat" / "checkpoints"
 
 # Main HEAT checkpoint relative to CHECKPOINTS_DIR
-CHECKPOINT_RELATIVE_PATH = Path("main_fine_tuned_my_finetune_512/checkpoint_best.pth")
+CHECKPOINT_RELATIVE_PATH = Path("heat_checkpoint_finetuned_512/checkpoint_best.pth")
 
 # Container backend used by scripts/run_heat.py
 # Supported values planned:
@@ -85,7 +104,7 @@ POSTPROCESS_OUTPUT_DIR = PROJECT_ROOT / "work" / "georeferenced_output"
 # LiDAR preprocessing / cropping
 # ---------------------------------------------------------------------
 
-MAIN_LIDAR_PATH = Path("/path/to/main_lidar_file.laz")
+MAIN_LIDAR_PATH = find_single_input_file(["*.laz", "*.LAZ"], "main LiDAR LAZ")
 LIDAR_INPUT_DIR = PROJECT_ROOT / "work" / "Lidar_input"
 
 LIDAR_EXTRA_BUFFER_M = 0.0

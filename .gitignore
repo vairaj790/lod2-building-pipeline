@@ -50,3 +50,21 @@ slurm/*_local.slurm
 
 # Local working data
 work/
+
+# Local input data
+input/*
+!input/.gitkeep
+
+# Local HEAT checkpoints
+third_party/heat/checkpoints/*
+!third_party/heat/checkpoints/.gitkeep
+
+# Keep checkpoint folder structure, but ignore checkpoint files
+!third_party/heat/checkpoints/
+third_party/heat/checkpoints/*
+!third_party/heat/checkpoints/.gitkeep
+
+# Keep checkpoint folder structure, but ignore checkpoint files
+!third_party/heat/checkpoints/
+third_party/heat/checkpoints/*
+!third_party/heat/checkpoints/.gitkeep

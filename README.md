@@ -51,17 +51,32 @@ Create the main pipeline environment:
     conda env create -f environments/environment_pipeline.yml
     conda activate lod2_pipeline
 
-Edit the config file with your custom paths:
+Place the input files inside:
+
+    input/
+
+The folder should contain exactly one satellite GeoTIFF and exactly one LiDAR LAZ file, for example:
+
+    input/
+      your_satellite_image.tif
+      your_lidar_file.laz
+
+The file names can be different. The config automatically searches for:
+
+    *.tif / *.tiff
+    *.laz
+
+Edit the config file if needed:
 
     configs/config.py
 
-Set paths such as:
+Important config values include:
 
-    SATELLITE_TIF
-    MAIN_LIDAR_PATH
-    SINGULARITY_IMAGE
-    CHECKPOINTS_DIR
     CONTAINER_BACKEND
+    SINGULARITY_IMAGE
+    DOCKER_IMAGE
+    CHECKPOINTS_DIR
+    CHECKPOINT_RELATIVE_PATH
 
 ## HEAT runtime
 
@@ -76,6 +91,36 @@ or:
 The Docker image used by default is:
 
     vaibhavrajan79/heat_deformable-detr-image:with_tensorboard
+
+## HEAT checkpoint
+
+The HEAT checkpoint is not committed to this repository.
+
+Download the fine-tuned checkpoint folder from:
+
+    https://cloud.uni-jena.de/public.php/dav/files/eftr8LboGGoSSEQ/?accept=zip
+
+Place or extract it so that the final structure is:
+
+    third_party/heat/checkpoints/
+      heat_checkpoint_finetuned_512/
+        checkpoint_best.pth
+
+The default config expects:
+
+    CHECKPOINTS_DIR = PROJECT_ROOT / "third_party" / "heat" / "checkpoints"
+    CHECKPOINT_RELATIVE_PATH = Path("heat_checkpoint_finetuned_512/checkpoint_best.pth")
+
+If downloading from the terminal, one possible workflow is:
+
+    mkdir -p third_party/heat/checkpoints
+    cd third_party/heat/checkpoints
+    wget -O heat_checkpoint_finetuned_512.zip "https://cloud.uni-jena.de/public.php/dav/files/eftr8LboGGoSSEQ/?accept=zip"
+    unzip heat_checkpoint_finetuned_512.zip
+
+After extraction, check that `checkpoint_best.pth` is inside:
+
+    third_party/heat/checkpoints/heat_checkpoint_finetuned_512/
 
 ## Build HEAT CUDA ops
 
