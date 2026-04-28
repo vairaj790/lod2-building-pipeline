@@ -1,14 +1,22 @@
 # LoD2 Building Pipeline
 
-This repository is being developed as a reproducible pipeline for generating 2D roof skeletons from satellite imagery and preparing them for downstream LoD2 building reconstruction.
+This repository is a pipeline for generating georeferenced 2D roof skeletons from satellite imagery and fusing them with LiDAR for downstream LoD2 building reconstruction.
+
+The pipeline takes satellite imagery and LiDAR point-cloud data as input and produces georeferenced roof skeletons and interactive LoD2 building reconstructions. In general, the workflow first identifies building-like regions from satellite imagery, extracts 2D roof structures, restores their map coordinates, and then combines them with LiDAR height information to generate 3D building geometry.
+
+The main external models used in this pipeline are:
+
+- **SAM 3**: used during preprocessing to segment building/roof-like regions from satellite imagery and generate per-building image crops.
+- **HEAT**: used to predict 2D roof skeletons from the cropped building images.
+- **LiDAR fusion**: used after HEAT inference to estimate roof and base heights and generate 3D LoD2 building geometry.
 
 Current implemented stages:
 
-1. Preprocessing satellite imagery into HEAT-compatible image crops
-2. Cropping a main LiDAR file into per-building `.laz` files using `geo_metadata.json`
-3. Running HEAT inference through Docker or Singularity
-4. Reassigning georeferencing to HEAT outputs
-5. Interactive 2D skeleton correction and LiDAR-based LoD2 reconstruction
+1. **Preprocessing**: Cropping satellite imagery into HEAT-compatible per-building crops
+2. **Preprocessing**: Cropping a LiDAR point file into per-building crops
+3. **HEAT**: Running HEAT inference through Docker or Singularity
+4. **Postprocessing**: Reassigning georeferencing to HEAT outputs
+5. **Main LoD2 Generation**: Interactive 2D skeleton correction and LiDAR-based LoD2 reconstruction
 
 ## Repository structure
 
@@ -20,13 +28,13 @@ Current implemented stages:
       environment_interactive_lod2.yml  Environment for interactive LoD2 reconstruction
 
     scripts/
-      run_preprocessing.py              Run satellite preprocessing and LiDAR cropping
+      run_preprocessing.py              Run satellite preprocessing using SAM3 and LiDAR cropping
       prepare_heat_input.py             Prepare HEAT-compatible input folder
       build_heat_ops.py                 Build HEAT CUDA extension
       run_heat.py                       Run HEAT inference
       run_postprocessing.py             Reassign georeferencing to HEAT outputs
       run_interactive_lod2.py           Run interactive 2D/3D LoD2 reconstruction
-      run_pipeline.py                   Run preprocessing/input-prep/HEAT/postprocessing workflow
+      run_pipeline.py                   Run preprocessing + HEAT + postprocessing workflow
 
     src/
       lod2_building_pipeline/
@@ -44,13 +52,9 @@ Create the main pipeline environment:
     conda env create -f environments/environment_pipeline.yml
     conda activate lod2_pipeline
 
-Copy the config and edit it for your machine:
+Edit the config file with your custom paths:
 
-    cp configs/config.py configs/config_local.py
-
-Edit:
-
-    configs/config_local.py
+    configs/config.py
 
 Set paths such as:
 
@@ -84,7 +88,7 @@ Build it with:
 
 ## Run main pipeline
 
-Run preprocessing. This creates HEAT image crops, `geo_metadata.json`, and per-building LiDAR crops:
+Run preprocessing. This creates HEAT per-building crops, `geo_metadata.json`, and per-building LiDAR crops:
 
     python scripts/run_preprocessing.py
 
@@ -102,18 +106,13 @@ Reassign georeferencing to HEAT outputs:
 
 Or run the combined workflow:
 
-    python scripts/run_pipeline.py
-
-The main generated folders are:
-
-    work/heat_input/
-    work/Lidar_input/
-    work/heat_output/
-    work/georeferenced_output/
+    python scripts/run_pipeline.py  # preprocessing + HEAT + postprocessing
 
 ## Interactive LoD2 reconstruction
 
-The final LoD2 reconstruction stage is interactive. It opens 2D and 3D windows for correcting roof skeletons, validating geometry, and fusing roof/base heights from LiDAR. This stage requires a graphical Python session.
+The final LoD2 reconstruction stage is interactive. It opens 2D and 3D windows for correcting roof skeletons, validating geometry, and fusing roof/base heights from LiDAR. It uses the georeferenced HEAT output produced in the previous stage together with the cropped LiDAR files to generate 3D building models.
+
+This stage requires a graphical Python session.
 
 Create the interactive environment:
 
@@ -123,16 +122,6 @@ Create the interactive environment:
 Run:
 
     python scripts/run_interactive_lod2.py
-
-This stage reads:
-
-    work/georeferenced_output/geojson_files/
-    work/Lidar_input/
-    work/heat_input/rgb_tif_original/
-
-and writes:
-
-    work/3D_output/
 
 ### 2D DELETE mode controls
 
@@ -172,6 +161,47 @@ and writes:
     W                            Toggle wall surfaces
     S                            Save PNG snapshot
     Close window                 Quit without saving
+
+## Acknowledgements and citations
+
+This pipeline builds on external research code and models. If you use this repository, please also cite the original works listed below.
+
+### SAM 3
+
+This project uses SAM 3 for segmentation-based preprocessing.
+
+Repository:
+
+    https://github.com/facebookresearch/sam3
+
+BibTeX:
+
+    @misc{carion2025sam3segmentconcepts,
+          title={SAM 3: Segment Anything with Concepts},
+          author={Nicolas Carion and Laura Gustafson and Yuan-Ting Hu and Shoubhik Debnath and Ronghang Hu and Didac Suris and Chaitanya Ryali and Kalyan Vasudev Alwala and Haitham Khedr and Andrew Huang and Jie Lei and Tengyu Ma and Baishan Guo and Arpit Kalla and Markus Marks and Joseph Greer and Meng Wang and Peize Sun and Roman Rädle and Triantafyllos Afouras and Effrosyni Mavroudi and Katherine Xu and Tsung-Han Wu and Yu Zhou and Liliane Momeni and Rishi Hazra and Shuangrui Ding and Sagar Vaze and Francois Porcher and Feng Li and Siyuan Li and Aishwarya Kamath and Ho Kei Cheng and Piotr Dollár and Nikhila Ravi and Kate Saenko and Pengchuan Zhang and Christoph Feichtenhofer},
+          year={2025},
+          eprint={2511.16719},
+          archivePrefix={arXiv},
+          primaryClass={cs.CV},
+          url={https://arxiv.org/abs/2511.16719},
+    }
+
+### HEAT
+
+This project uses a modified version of HEAT for 2D roof skeleton inference.
+
+Repository:
+
+    https://github.com/woodfrog/heat
+
+BibTeX:
+
+    @inproceedings{chen2022heat,
+         title={HEAT: Holistic Edge Attention Transformer for Structured Reconstruction},
+         author={Chen, Jiacheng and Qian, Yiming and Furukawa, Yasutaka},
+         booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+         year={2022}
+    }
 
 ## Notes
 
