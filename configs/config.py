@@ -80,3 +80,32 @@ LOCAL_HEAT_OPS_SOURCE_DIR = Path("/path/to/existing/heat/models/ops")
 # ---------------------------------------------------------------------
 
 POSTPROCESS_OUTPUT_DIR = PROJECT_ROOT / "work" / "georeferenced_output"
+
+# ---------------------------------------------------------------------
+# LiDAR preprocessing / cropping
+# ---------------------------------------------------------------------
+
+MAIN_LIDAR_PATH = Path("/path/to/main_lidar_file.laz")
+LIDAR_INPUT_DIR = PROJECT_ROOT / "work" / "Lidar_input"
+
+LIDAR_EXTRA_BUFFER_M = 0.0
+LIDAR_POINTS_PER_CHUNK = 2_000_000
+SAVE_MERGED_LIDAR_DEBUG_FILE = True
+MERGED_LIDAR_DEBUG_NAME = "merged_cropped_buildings_from_metadata.laz"
+
+
+# ---------------------------------------------------------------------
+# Interactive LoD2 / 3D reconstruction stage
+# ---------------------------------------------------------------------
+
+LOD2_3D_OUTPUT_DIR = PROJECT_ROOT / "work" / "3D_output"
+LOD2_SNAPSHOT_DIR = LOD2_3D_OUTPUT_DIR / "snapshots"
+LOD2_RMSE_CSV_PATH = LOD2_3D_OUTPUT_DIR / "roof_rmse_results.csv"
+
+# Optional folder used to restrict which buildings are processed.
+# If None, all matching GeoJSON + LAZ + GeoTIFF triplets are processed.
+PROCESS_ONLY_FROM_DIR = None
+
+# If True, scripts/run_preprocessing.py also crops the main LiDAR file
+# into per-building LAZ files using geo_metadata.json.
+RUN_LIDAR_CROP_IN_PREPROCESSING = True
