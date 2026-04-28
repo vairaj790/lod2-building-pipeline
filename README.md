@@ -86,6 +86,7 @@ The Docker image used by default is:
     cd third_party/heat/checkpoints
     wget -O heat_checkpoint_finetuned_512.zip "https://cloud.uni-jena.de/public.php/dav/files/eftr8LboGGoSSEQ/?accept=zip"
     unzip heat_checkpoint_finetuned_512.zip
+    rm -f heat_checkpoint_finetuned_512.zip 
 
 ## Build HEAT CUDA ops
 
