@@ -8,7 +8,6 @@ The main external models used in this pipeline are:
 
 - **SAM 3**: used during preprocessing to segment building/roof-like regions from satellite imagery and generate per-building image crops.
 - **HEAT**: used to predict 2D roof skeletons from the cropped building images.
-- **LiDAR fusion**: used after HEAT inference to estimate roof and base heights and generate 3D LoD2 building geometry.
 
 Current implemented stages:
 
@@ -202,7 +201,3 @@ BibTeX:
          booktitle={IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
          year={2022}
     }
-
-## Notes
-
-Large data, checkpoints, container images, compiled binaries, LiDAR files, and generated outputs are intentionally not committed.
