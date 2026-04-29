@@ -17,6 +17,8 @@ Current implemented stages:
 4. **Postprocessing**: Reassigning georeferencing to HEAT outputs
 5. **Main LoD2 Generation**: Interactive 2D skeleton correction and LiDAR-based LoD2 reconstruction
 
+![LoD2 building pipeline workflow](docs/figures/Workflow_LOD2_PIPELINE.png)
+
 ## Repository structure
 
     configs/
@@ -174,15 +176,11 @@ Run:
 
 ## Acknowledgements and citations
 
-This pipeline builds on external research code and models. If you use this repository, please also cite the original works listed below.
+This pipeline builds on external codes and models. If you use this repository, please also cite the original works listed below.
 
 ### SAM 3
 
-This project uses SAM 3 for segmentation-based preprocessing.
-
-Repository:
-
-    https://github.com/facebookresearch/sam3
+This project uses [SAM 3](https://github.com/facebookresearch/sam3) for segmentation-based preprocessing.
 
 BibTeX:
 
@@ -198,11 +196,7 @@ BibTeX:
 
 ### HEAT
 
-This project uses a modified version of HEAT for 2D roof skeleton inference.
-
-Repository:
-
-    https://github.com/woodfrog/heat
+This project uses a modified version of the outdoor reconstruction [HEAT](https://github.com/woodfrog/heat) for 2D roof skeleton extraction.
 
 BibTeX:
 
